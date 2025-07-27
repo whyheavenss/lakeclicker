@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lake Clicker</title>
+  <!-- Шрифт SF Pro Display Regular -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:ital,wght@0,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #1E3A8A;
+      --accent-color: #3B82F6;
+      --bg-color: #F3F4F6;
+      --card-bg: #FFFFFF;
+      --text-color: #111827;
+      --shadow: 0 4px 12px rgba(0,0,0,0.1);
+      --font: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      background: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+    }
+    #profile { display: flex; align-items: center; }
+    #profile img {
+      width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; object-fit: cover;
+    }
+    #balance { font-weight: 500; font-size: 1.1em; }
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #click-card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    #click-img {
+      width: 200px;
+      height: 200px;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+    #click-img:active { transform: scale(0.9); }
+    #tokens {
+      margin-top: 12px;
+      font-size: 1.5em;
+      font-weight: 600;
+    }
+    footer {
+      display: flex;
+      justify-content: space-around;
+      padding: 12px;
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+    }
+    footer button {
+      flex: 1;
+      margin: 0 8px;
+      padding: 12px;
+      font-family: var(--font);
+      font-size: 1em;
+      font-weight: 500;
+      border: none;
+      border-radius: 8px;
+      background: var(--accent-color);
+      color: #FFF;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    footer button:hover { background: var(--primary-color); }
+    .overlay {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100;
+    }
+    .modal {
+      background: #FFF;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 320px;
+      width: 80%;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .modal h2 { margin-bottom: 16px; font-family: var(--font); }
+    .modal button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 12px;
+      font-family: var(--font);
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      background: var(--accent-color);
+      color: #FFF;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div id="profile">
+      <img id="avatar" src="" alt="Avatar">
+      <span id="username"></span>
+    </div>
+    <div id="balance">Lake: 0</div>
+  </header>
+  <main>
+    <div id="click-card">
+      <img id="click-img" src="https://imgur.com/yOUdJnB.png" alt="Lake Click">
+      <div id="tokens">0 Lake</div>
+    </div>
+  </main>
+  <footer>
+    <button id="shop-btn">Shop 🛒</button>
+    <button id="profile-btn">Profile 👤</button>
+  </footer>
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    let balance = 0, clickRate = 1, autoRate = 0;
+    const inventory = [];
+
+    document.getElementById('avatar').src = tg.initDataUnsafe.user?.photo_url || '';
+    document.getElementById('username').textContent = tg.initDataUnsafe.user?.username || 'Unknown';
+
+    function updateUI() {
+      document.getElementById('balance').textContent = `Lake: ${balance}`;
+      document.getElementById('tokens').textContent = `${balance} Lake`;
+    }
+
+    document.getElementById('click-img').addEventListener('click', () => {
+      balance += clickRate;
+      updateUI();
+    });
+
+    setInterval(() => {
+      balance += autoRate + 1;
+      updateUI();
+    }, 5000);
+
+    function showModal(title, buttons) {
+      const overlay = document.createElement('div'); overlay.className = 'overlay';
+      const modal = document.createElement('div'); modal.className = 'modal';
+      modal.innerHTML = `<h2>${title}</h2>` + buttons.map(btn =>
+        `<button id="${btn.id}">${btn.label}</button>`
+      ).join('') + `<button id="close-modal">Close</button>`;
+      overlay.append(modal); document.body.append(overlay);
+      overlay.querySelector('#close-modal').onclick = () => overlay.remove();
+      buttons.forEach(btn => {
+        overlay.querySelector(`#${btn.id}`).onclick = () => {
+          btn.onClick();
+          updateUI();
+        };
+      });
+    }
+
+    document.getElementById('shop-btn').addEventListener('click', () => {
+      showModal('Shop', [
+        {
+          id: 'buy-boost', label: 'Boost (+1) - 100k',
+          onClick: () => {
+            if (balance >= 100000) { balance -= 100000; clickRate++; autoRate++; inventory.push('Boost +1'); }
+            else alert('Недостаточно токенов');
+          }
+        },
+        {
+          id: 'buy-gift', label: 'Gift Banknope - 500k',
+          onClick: () => {
+            if (balance >= 500000) { balance -= 500000; inventory.push('Gift Banknope'); }
+            else alert('Недостаточно токенов');
+          }
+        }
+      ]);
+    });
+
+    document.getElementById('profile-btn').addEventListener('click', () => {
+      showModal('Profile', [
+        {
+          id: 'view-profile', label: `Username: ${tg.initDataUnsafe.user?.username || 'Unknown'}`,
+          onClick: () => {}
+        },
+        {
+          id: 'view-balance', label: `Balance: ${balance} Lake`,
+          onClick: () => {}
+        },
+        {
+          id: 'view-inv', label: `Inventory: ${inventory.join(', ') || 'Empty'}`,
+          onClick: () => {}
+        }
+      ]);
+    });
+
+    updateUI();
+  </script>
+</body>
+</html>
