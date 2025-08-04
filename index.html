@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MemRoll</title>
+  <title>Lake</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,7 +17,7 @@
       --accent-orange: #FF9500;
       --accent-red: #FF3B30;
       
-      --bg-primary: #000000;
+      --bg-primary: #000000f1;
       --bg-secondary: #1C1C1E;
       --bg-tertiary: #2C2C2E;
       --bg-quaternary: #3A3A3C;
@@ -25,6 +25,7 @@
       --text-primary: #FFFFFF;
       --text-secondary: #99999C;
       --text-tertiary: #6D6D70;
+
       
       --separator: #38383A;
       --overlay: rgba(0, 0, 0, 0.4);
@@ -41,6 +42,8 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+
+    
     body {
       font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg-primary);
@@ -77,7 +80,7 @@
          .user-avatar {
        width: 32px;
        height: 32px;
-       background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+       background: var(--bg-secondary);
        border-radius: 8px;
       display: flex;
       align-items: center;
@@ -107,7 +110,7 @@
     }
 
     .balance-currency {
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 600;
       color: var(--primary-blue);
       margin-left: 4px;
@@ -250,11 +253,14 @@
     .category-card {
       background: var(--bg-secondary);
       border-radius: 16px;
-      padding: 20px 16px;
+      padding: 50px 16px;
       text-align: center;
       cursor: pointer;
       transition: all 0.3s ease;
-      position: relative;
+      position: absolute;
+      left: 15%;
+      width: 300px;
+      height: 260px;
       overflow: hidden;
       border: 1px solid var(--separator);
     }
@@ -268,8 +274,8 @@
 
 
     .category-icon {
-      width: 64px;
-      height: 64px;
+      width: 50px;
+      height: 120px;
       background: var(--bg-tertiary);
       border-radius: 12px;
       display: flex;
@@ -280,8 +286,8 @@
     }
 
     .category-icon img {
-      width: 48px;
-      height: 48px;
+      width: 1000px;
+      height: 200px;
       border-radius: 8px;
       object-fit: cover;
     }
@@ -289,8 +295,8 @@
     .category-title {
       font-size: 14px;
       font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 8px;
+      color: var(--text-secondary);
+      margin: 15%;
     }
 
     .category-price {
@@ -392,10 +398,10 @@
     }
 
     .prize-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(---text-secondary);
+      margin-bottom: 4px;
     }
 
     .prize-description {
@@ -514,22 +520,22 @@
              <div class="header-left">
          <div class="user-avatar"><i class="bi bi-coin"></i></div>
          <div class="balance-info">
-           <span class="balance-label">Ваш баланс</span>
+
            <div class="balance-amount">
              <span id="userBalance">0</span>
-             <span class="balance-currency">⭐</span>
+             <span class="balance-currency">Lake</span>
            </div>
          </div>
        </div>
       <div class="header-actions">
-        <button class="add-button">
-          <i class="fas fa-plus"></i>
+
+
         </button>
       </div>
     </header>
 
     <section class="featured-section fade-in-up">
-             <div class="featured-card" onclick="t.me/LakeCase">
+             <div class="featured-card" href="t.me/LakeCase">
       <div class="featured-content">
            <div class="featured-title">Заходи в наш канал!</div>
 
@@ -541,6 +547,13 @@
       </div>
     </section>
 
+                 <div class="category-card" onclick="addBalanceAnimated(this)">
+           <div class="category-icon">
+             <img src="pic/gargonna.gif" alt="Gargonna">
+           </div>
+           <div class="category-title">Tap tap tap...</div>
+        </div>
+      </div>
 
     <section class="categories-section fade-in-up">
       <div class="section-header">
@@ -569,15 +582,15 @@
          <div class="nav-container">
        <a href="#" class="nav-item active" data-tab="store" onclick="showStore()">
          <i class="nav-icon fas fa-home"></i>
-         <span class="nav-label">Cases</span>
+         <span class="prize-title">Farm</span>
       </a>
-       <a href="gifts.html" class="nav-item" data-tab="gifts">
+       <a href="" class="nav-item" data-tab="gifts">
          <i class="nav-icon fas fa-gift"></i>
-         <span class="nav-label">My gifts</span>
+         <span class="prize-title">Shop</span>
       </a>
-              <a href="profile.html" class="nav-item" data-tab="profile">
+              <a href="" class="nav-item" data-tab="profile">
         <i class="nav-icon fas fa-user"></i>
-        <span class="nav-label">Profile</span>
+        <span class="prize-title">Profile</span>
       </a>
     </div>
   </nav>
@@ -609,20 +622,45 @@
     function updateStats() {
       userBalanceEl.textContent = gameState.balance.toString();
     }
+function addBalanceAnimated(cardElement) {
+  // Увеличиваем баланс
+  gameState.balance += 1;
+  userBalanceEl.textContent = gameState.balance;
+
+  // Анимация пульса для баланса
+  userBalanceEl.animate([
+    { transform: 'scale(1)' },
+    { transform: 'scale(1.25)' },
+    { transform: 'scale(1)' }
+  ], {
+    duration: 300,
+    easing: 'ease'
+  });
+
+  // Анимация пульса для кейса (элемента)
+  cardElement.animate([
+    { transform: 'scale(1)' },
+    { transform: 'scale(1.1)' },
+    { transform: 'scale(1)' }
+  ], {
+    duration: 200,
+    easing: 'ease'
+  });
+}
+
+
+  
 
     function updateFreeCaseButton() {
       const now = Date.now();
       const timeSinceLastCase = now - gameState.lastFreeCaseTime;
       const timeRemaining = Math.max(0, gameState.cooldownTime - timeSinceLastCase);
 
-      if (timeRemaining > 0) {
-        freeCaseButton.disabled = true;
-        freeCaseButton.innerHTML = '<i class="fas fa-clock"></i> Подождите...';
-      } else {
+ 
         freeCaseButton.disabled = false;
         freeCaseButton.innerHTML = '<i class="fas fa-gift"></i> Открыть бесплатно';
       }
-    }
+
 
     function checkFreeCaseAvailability() {
       const now = Date.now();
