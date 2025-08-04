@@ -258,7 +258,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
       position: absolute;
-      left: 15%;
+      left: 62px;
       width: 300px;
       height: 260px;
       overflow: hidden;
@@ -614,6 +614,8 @@
     const userBalanceEl = document.getElementById('userBalance');
 
     function init() {
+       const saved = localStorage.getItem("lake_balance");
+  gameState.balance = saved ? parseInt(saved) : 0;
       updateStats();
       updateFreeCaseButton();
       setInterval(updateFreeCaseButton, 1000);
@@ -626,6 +628,8 @@ function addBalanceAnimated(cardElement) {
   // Увеличиваем баланс
   gameState.balance += 1;
   userBalanceEl.textContent = gameState.balance;
+  localStorage.setItem("lake_balance", gameState.balance);
+
 
   // Анимация пульса для баланса
   userBalanceEl.animate([
