@@ -267,6 +267,14 @@
       border: 1px solid var(--separator);
     }
 
+    /* на экранах меньше 400px делаем отступ меньше */
+@media (max-width: 400px) {
+  .category-card {
+    left: 20px;
+    width: calc(100% - 40px); /* чтобы влезала на экран */
+  }
+}
+
     .category-card:hover {
       background: var(--bg-tertiary);
       transform: translateY(-2px);
