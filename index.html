@@ -19,14 +19,24 @@
       
       --bg-primary: #000000f1;
       --bg-secondary: #1C1C1E;
-      --bg-tertiary: #2C2C2E;
+      --bg-tertiary: #1f1f20;
       --bg-quaternary: #3A3A3C;
       
       --text-primary: #FFFFFF;
       --text-secondary: #99999C;
       --text-tertiary: #6D6D70;
 
-      
+    .energy-display {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.category-card.disabled {
+  opacity: 0.5;
+  pointer-events: none; /* отключает клики */
+}
+
       --separator: #38383A;
       --overlay: rgba(0, 0, 0, 0.4);
       
@@ -77,17 +87,25 @@
       gap: 12px;
     }
 
-         .user-avatar {
-       width: 32px;
-       height: 32px;
-       background: var(--bg-secondary);
-       border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-       font-size: 16px;
-       font-weight: 600;
-    }
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* обязательно, чтобы картинка не вылезала */
+  padding: 4px; /* немного отступа вокруг картинки */
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* не обрезает, как cover */
+  border-radius: 6px;
+}
+
 
     .balance-info {
       display: flex;
@@ -109,11 +127,13 @@
       gap: 6px;
     }
 
+    
+
     .balance-currency {
       font-size: 18px;
       font-weight: 600;
       color: var(--primary-blue);
-      margin-left: 4px;
+      margin-left: -1px;
     }
 
     .header-actions {
@@ -148,7 +168,7 @@
     }
 
          .featured-card {
-       background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+       background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-blue) 100%);
       border-radius: 20px;
       padding: 24px;
        position: relative;
@@ -180,11 +200,20 @@
     }
 
     .featured-title {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 800;
       color: white;
       margin-bottom: 8px;
     }
+
+   .featured-titlee {
+      font-size: 22px;
+      font-weight: 200;
+      color: white;
+      margin-bottom: 8px;
+      left: 80px;
+    }
+
 
     .featured-subtitle {
       font-size: 14px;
@@ -199,7 +228,7 @@
       border-radius: 12px;
       padding: 12px 20px;
       color: white;
-      font-weight: 600;
+      font-weight: 500;
       font-size: 14px;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -210,16 +239,7 @@
       transform: translateY(-1px);
     }
 
-    .featured-decoration {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 120px;
-      height: 120px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      transform: translate(40px, -40px);
-    }
+ 
 
     /* Categories */
     .categories-section {
@@ -338,8 +358,7 @@
       max-width: 430px;
       background: var(--bg-secondary);
       backdrop-filter: blur(20px);
-      border-top: 1px solid var(--separator);
-      padding: 8px 0 32px;
+      padding: 8px 0 12px;
       z-index: 1000;
     }
 
@@ -364,12 +383,12 @@
 
     .nav-item.active {
        color: var(--primary-blue);
-       background: rgba(0, 122, 255, 0.1);
+       background: (--bg-secondary);
     }
 
     .nav-item:hover {
        color: var(--primary-blue);
-       background: rgba(0, 122, 255, 0.05);
+       background: (--bg-tertiary);
     }
 
     .nav-icon {
@@ -411,7 +430,7 @@
       font-size: 16px;
       font-weight: 600;
       color: var(---text-secondary);
-      margin-bottom: 4px;
+
     }
 
     .prize-description {
@@ -528,7 +547,10 @@
   <div class="app-container">
     <header class="app-header fade-in-up">
              <div class="header-left">
-         <div class="user-avatar"><i class="bi bi-coin"></i></div>
+   <div class="user-avatar">
+  <img src="pic/lake.png" alt="Lake">
+</div>
+
          <div class="balance-info">
 
            <div class="balance-amount">
@@ -543,27 +565,30 @@
         </button>
       </div>
     </header>
+<section class="featured-section fade-in-up">
+  <div class="featured-card">
+    <div class="featured-content">
+      <div class="featured-title">Заходи в наш канал!</div>
+                       <div class="featured-titlee">@LakeCase</div>
+      <button class="featured-button" id="freeCaseButton">
+        <i class="featured-titlee"></i> Зайти
+      </button>
+    </div>
+    <div class="featured-decoration"></div>
+  </div>
+</section>
 
-    <section class="featured-section fade-in-up">
-             <div class="featured-card" href="t.me/LakeCase">
-      <div class="featured-content">
-           <div class="featured-title">Заходи в наш канал!</div>
 
-        <button class="featured-button" id="freeCaseButton">
-          <i class="fas fa-gift"></i> Зайти
-        </button>
-      </div>
-         <div class="featured-decoration"></div>
-      </div>
-    </section>
+<div class="category-card" onclick="addBalanceAnimated(this); tapGargonna(this);">
+  <div class="category-icon">
+    <img src="pic/gargonna.gif" alt="Gargonna">
+  </div>
+  <div class="category-title">Tap tap tap...</div>
+</div>
+<div class="energy-display" style="text-align:center; margin-top: 8px;">
+  ⚡ <span id="energy">1000</span>/1000
+</div>
 
-                 <div class="category-card" onclick="addBalanceAnimated(this)">
-           <div class="category-icon">
-             <img src="pic/gargonna.gif" alt="Gargonna">
-           </div>
-           <div class="category-title">Tap tap tap...</div>
-        </div>
-      </div>
 
     <section class="categories-section fade-in-up">
       <div class="section-header">
@@ -672,7 +697,7 @@ function addBalanceAnimated(cardElement) {
 
  
         freeCaseButton.disabled = false;
-        freeCaseButton.innerHTML = '<i class="fas fa-gift"></i> Открыть бесплатно';
+        freeCaseButton.innerHTML = '<i class="fas fa-join"></i>Зайти';
       }
 
 
@@ -1479,6 +1504,73 @@ function addBalanceAnimated(cardElement) {
       document.body.appendChild(modal);
     }
 
+let maxEnergy = 1000;
+let energy = maxEnergy;
+
+const energyDisplay = document.getElementById("energy");
+const categoryCard = document.querySelector(".category-card");
+
+let lastClickTime = 0;
+
+// Загружаем энергию из localStorage, если есть
+function loadEnergy() {
+  const savedEnergy = localStorage.getItem("energy");
+  if (savedEnergy !== null) {
+    energy = parseInt(savedEnergy, 10);
+    if (isNaN(energy) || energy > maxEnergy) {
+      energy = maxEnergy;
+    }
+  }
+}
+
+// Сохраняем энергию в localStorage
+function saveEnergy() {
+  localStorage.setItem("energy", energy);
+}
+
+function updateEnergyDisplay() {
+  energyDisplay.textContent = energy;
+  
+  if (energy <= 0) {
+    categoryCard.classList.add("disabled");
+  } else {
+    categoryCard.classList.remove("disabled");
+  }
+
+  saveEnergy(); // сохраняем при каждом обновлении
+}
+
+function tapGargonna(card) {
+  const now = Date.now();
+  if (now - lastClickTime < 0) {
+    return;
+  }
+  lastClickTime = now;
+
+  if (energy <= 0) {
+    alert("Энергия закончилась, подождите восстановление!");
+    return;
+  }
+
+  energy -= 1;
+  updateEnergyDisplay();
+
+  addBalanceAnimated(card);
+}
+
+// Восстановление энергии каждую секунду
+setInterval(() => {
+  if (energy < maxEnergy) {
+    energy += 1;
+    updateEnergyDisplay();
+  }
+}, 1000);
+
+// Инициализация при загрузке страницы
+loadEnergy();
+updateEnergyDisplay();
+
+
 
 
     function updateNavigation(activeTab) {
@@ -1497,17 +1589,11 @@ function addBalanceAnimated(cardElement) {
     function showStore() {
       location.reload();
     }
+      document.getElementById("freeCaseButton").addEventListener("click", function () {
+    window.open("https://t.me/LakeCase", "_blank");
+  });
 
     init();
-
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-    `;
-    document.head.appendChild(style);
   </script>
 </body>
 </html> 
