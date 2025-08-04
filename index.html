@@ -3,220 +3,1497 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lake Clicker</title>
-  <!-- Шрифт SF Pro Display Regular -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:ital,wght@0,400&display=swap" rel="stylesheet">
+  <title>MemRoll</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <style>
     :root {
-      --primary-color: #1E3A8A;
-      --accent-color: #3B82F6;
-      --bg-color: #F3F4F6;
-      --card-bg: #FFFFFF;
-      --text-color: #111827;
-      --shadow: 0 4px 12px rgba(0,0,0,0.1);
-      --font: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+      --primary-blue: #007AFF;
+      --primary-blue-light: #4DA2FF;
+      --secondary-blue: #0051D5;
+      --primary-purple: #5856D6;
+      --accent-orange: #FF9500;
+      --accent-red: #FF3B30;
+      
+      --bg-primary: #000000;
+      --bg-secondary: #1C1C1E;
+      --bg-tertiary: #2C2C2E;
+      --bg-quaternary: #3A3A3C;
+      
+      --text-primary: #FFFFFF;
+      --text-secondary: #99999C;
+      --text-tertiary: #6D6D70;
+      
+      --separator: #38383A;
+      --overlay: rgba(0, 0, 0, 0.4);
+      
+      --shadow-small: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.5);
+              --shadow-large: 0 8px 32px rgba(0, 0, 0, 0.7);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
-      font-family: var(--font);
-      background: var(--bg-color);
-      color: var(--text-color);
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
     }
-    header {
+
+         .app-container {
+       max-width: 430px;
+      margin: 0 auto;
+       background: var(--bg-primary);
+       min-height: 100vh;
+      position: relative;
+       overflow-x: hidden;
+    }
+
+    /* Header */
+    .app-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 12px;
-      background: var(--card-bg);
-      box-shadow: var(--shadow);
+      justify-content: space-between;
+      padding: 60px 20px 20px;
+      background: var(--bg-primary);
     }
-    #profile { display: flex; align-items: center; }
-    #profile img {
-      width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; object-fit: cover;
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
-    #balance { font-weight: 500; font-size: 1.1em; }
-    main {
-      flex: 1;
+
+         .user-avatar {
+       width: 32px;
+       height: 32px;
+       background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+       font-size: 16px;
+       font-weight: 600;
     }
-    #click-card {
-      background: var(--card-bg);
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      text-align: center;
+
+    .balance-info {
+      display: flex;
+      flex-direction: column;
     }
-    #click-img {
-      width: 200px;
-      height: 200px;
-      cursor: pointer;
-      transition: transform 0.1s ease;
+
+    .balance-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
     }
-    #click-img:active { transform: scale(0.9); }
-    #tokens {
-      margin-top: 12px;
-      font-size: 1.5em;
+
+    .balance-amount {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .balance-currency {
+      font-size: 16px;
       font-weight: 600;
+      color: var(--primary-blue);
+      margin-left: 4px;
     }
-    footer {
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+         .add-button {
+       width: 36px;
+       height: 36px;
+       background: var(--bg-secondary);
+       border: none;
+       border-radius: 10px;
+       color: var(--primary-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+       font-size: 18px;
+       cursor: pointer;
+       transition: all 0.2s ease;
+     }
+
+    .add-button:hover {
+      background: var(--bg-tertiary);
+      transform: scale(1.05);
+    }
+
+    /* Featured Section */
+    .featured-section {
+      padding: 0 20px 24px;
+    }
+
+         .featured-card {
+       background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-light) 100%);
+      border-radius: 20px;
+      padding: 24px;
+       position: relative;
+       overflow: hidden;
+       cursor: pointer;
+       transition: transform 0.3s ease;
+       box-shadow: var(--shadow-large);
+     }
+
+    .featured-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .featured-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .featured-badge {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .featured-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 8px;
+    }
+
+    .featured-subtitle {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 20px;
+    }
+
+    .featured-button {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 12px 20px;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .featured-button:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .featured-decoration {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 120px;
+      height: 120px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transform: translate(40px, -40px);
+    }
+
+    /* Categories */
+    .categories-section {
+      padding: 0 20px 24px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .section-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .category-card {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 20px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--separator);
+    }
+
+    .category-card:hover {
+      background: var(--bg-tertiary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+
+
+    .category-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      border: 1px solid var(--separator);
+    }
+
+    .category-icon img {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .category-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .category-price {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-blue);
+    }
+
+    .price-icon {
+      font-size: 14px;
+      color: var(--primary-blue);
+      margin-left: 4px;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      background: var(--bg-secondary);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--separator);
+      padding: 8px 0 32px;
+      z-index: 1000;
+    }
+
+    .nav-container {
       display: flex;
       justify-content: space-around;
-      padding: 12px;
-      background: var(--card-bg);
-      box-shadow: var(--shadow);
+      align-items: center;
+      padding: 0 20px;
     }
-    footer button {
-      flex: 1;
-      margin: 0 8px;
-      padding: 12px;
-      font-family: var(--font);
-      font-size: 1em;
-      font-weight: 500;
-      border: none;
-      border-radius: 8px;
-      background: var(--accent-color);
-      color: #FFF;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-    footer button:hover { background: var(--primary-color); }
-    .overlay {
-      position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 100;
-    }
-    .modal {
-      background: #FFF;
-      padding: 20px;
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+      padding: 8px 12px;
       border-radius: 12px;
-      max-width: 320px;
-      width: 80%;
-      text-align: center;
-      box-shadow: var(--shadow);
+      min-width: 60px;
     }
-    .modal h2 { margin-bottom: 16px; font-family: var(--font); }
-    .modal button {
-      display: block;
-      width: 100%;
-      margin: 8px 0;
-      padding: 12px;
-      font-family: var(--font);
-      font-size: 1em;
-      border: none;
-      border-radius: 8px;
-      background: var(--accent-color);
-      color: #FFF;
-      cursor: pointer;
-      transition: background 0.2s ease;
+
+    .nav-item.active {
+       color: var(--primary-blue);
+       background: rgba(0, 122, 255, 0.1);
+    }
+
+    .nav-item:hover {
+       color: var(--primary-blue);
+       background: rgba(0, 122, 255, 0.05);
+    }
+
+    .nav-icon {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+
+    .prize-display {
+      margin: 20px;
+      padding: 20px;
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      text-align: center;
+      border: 1px solid var(--separator);
+        opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+      }
+
+    .prize-display.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .prize-emoji {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .prize-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .prize-description {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 380px) {
+      .app-header {
+        padding: 50px 16px 16px;
+      }
+      
+      .featured-section,
+      .categories-section {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      
+      .featured-title {
+        font-size: 20px;
+      }
+      
+      .section-title {
+        font-size: 20px;
+      }
+      
+      .category-icon {
+        width: 56px;
+        height: 56px;
+    }
+
+             .category-icon img {
+         width: 40px;
+         height: 40px;
+       }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .spinning {
+      animation: spin 0.1s linear infinite;
+      }
+      
+    .loading {
+      pointer-events: none;
+      opacity: 0.6;
+      }
+      
+    .loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--text-secondary);
+      border-top: 2px solid var(--primary-blue);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      transform: translate(-50%, -50%);
+    }
+    
+    /* Prize reel animations */
+    .prize-reel-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--separator);
+      }
+      
+    .prize-reel {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      will-change: transform;
+      backface-visibility: hidden;
+      transform-style: preserve-3d;
+    }
+    
+    .prize-item {
+      flex-shrink: 0;
+      will-change: transform;
+      backface-visibility: hidden;
+      }
+      
+    * {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div id="profile">
-      <img id="avatar" src="" alt="Avatar">
-      <span id="username"></span>
+  <div class="app-container">
+    <header class="app-header fade-in-up">
+             <div class="header-left">
+         <div class="user-avatar"><i class="bi bi-coin"></i></div>
+         <div class="balance-info">
+           <span class="balance-label">Ваш баланс</span>
+           <div class="balance-amount">
+             <span id="userBalance">0</span>
+             <span class="balance-currency">⭐</span>
+           </div>
+         </div>
+       </div>
+      <div class="header-actions">
+        <button class="add-button">
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
+    </header>
+
+    <section class="featured-section fade-in-up">
+             <div class="featured-card" onclick="openFreeCase()">
+      <div class="featured-content">
+           <div class="featured-title">FreeCase</div>
+        <div class="featured-subtitle">Открой бесплатный кейс каждые 24 часа</div>
+        <button class="featured-button" id="freeCaseButton">
+          <i class="fas fa-gift"></i> Открыть бесплатно
+        </button>
+      </div>
+         <div class="featured-decoration"></div>
+      </div>
+    </section>
+
+
+    <section class="categories-section fade-in-up">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Все кейсы</div>
+          <div class="section-subtitle">Различные</div>
+        </div>
+        </div>
+
+      <div class="categories-grid">
+                 <div class="category-card" onclick="showCaseInDevelopment()">
+           <div class="category-icon">
+             <img src="gifts/serphira-case.svg" alt="Serphira Case">
+           </div>
+           <div class="category-title">Serphira Case</div>
+                     <div class="category-price">
+             <span>25 ⭐</span>
+        </div>
+      </div>
+
+                 <div class="category-card" onclick="showCaseInDevelopment()">
+           <div class="category-icon">
+             <img src="gifts/cap-case.svg" alt="Cap Case">
+        </div>
+        <div class="category-title">Cap Case</div>
+                     <div class="category-price">
+             <span>100 ⭐</span>
+        </div>
+      </div>
+
+                 <div class="category-card" onclick="showCaseInDevelopment()">
+           <div class="category-icon">
+             <img src="gifts/miss-case.svg" alt="Miss Case">
+        </div>
+        <div class="category-title">Miss Case</div>
+                     <div class="category-price">
+          <span>200 ⭐</span>
+        </div>
+      </div>
+
+                 <div class="category-card" onclick="showCaseInDevelopment()">
+           <div class="category-icon">
+             <img src="gifts/trump-case.svg" alt="Trump Case">
+        </div>
+        <div class="category-title">Trump Case</div>
+                     <div class="category-price">
+          <span>350 ⭐</span>
+        </div>
+      </div>
     </div>
-    <div id="balance">Lake: 0</div>
-  </header>
-  <main>
-    <div id="click-card">
-      <img id="click-img" src="https://imgur.com/yOUdJnB.png" alt="Lake Click">
-      <div id="tokens">0 Lake</div>
+    </section>
+
+    <div class="prize-display" id="prizeCard">
+      <div class="prize-emoji" id="prizeEmoji">🎉</div>
+      <div class="prize-title" id="prizeTitle">Поздравляем!</div>
+      <div class="prize-description" id="prizeDescription">Вы выиграли эксклюзивный предмет!</div>
     </div>
-  </main>
-  <footer>
-    <button id="shop-btn">Shop 🛒</button>
-    <button id="profile-btn">Profile 👤</button>
-  </footer>
+
+     <div style="height: 90px;"></div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+         <div class="nav-container">
+       <a href="#" class="nav-item active" data-tab="store" onclick="showStore()">
+         <i class="nav-icon fas fa-home"></i>
+         <span class="nav-label">Cases</span>
+      </a>
+       <a href="gifts.html" class="nav-item" data-tab="gifts">
+         <i class="nav-icon fas fa-gift"></i>
+         <span class="nav-label">My gifts</span>
+      </a>
+              <a href="profile.html" class="nav-item" data-tab="profile">
+        <i class="nav-icon fas fa-user"></i>
+        <span class="nav-label">Profile</span>
+      </a>
+    </div>
+  </nav>
+
   <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
-    let balance = 0, clickRate = 1, autoRate = 0;
-    const inventory = [];
-
-    document.getElementById('avatar').src = tg.initDataUnsafe.user?.photo_url || '';
-    document.getElementById('username').textContent = tg.initDataUnsafe.user?.username || 'Unknown';
-
-    function updateUI() {
-      document.getElementById('balance').textContent = `Lake: ${balance}`;
-      document.getElementById('tokens').textContent = `${balance} Lake`;
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
     }
 
-    document.getElementById('click-img').addEventListener('click', () => {
-      balance += clickRate;
-      updateUI();
-    });
+    let gameState = {
+      spins: parseInt(localStorage.getItem('totalSpins') || '0'),
+      wins: parseInt(localStorage.getItem('totalWins') || '0'),
+      balance: 0,
+      lastFreeCaseTime: parseInt(localStorage.getItem('lastFreeCaseTime') || '0'),
+      cooldownTime: 24 * 60 * 60 * 1000,
+      isOpening: false
+    };
 
-    setInterval(() => {
-      balance += autoRate + 1;
-      updateUI();
-    }, 5000);
+    const freeCaseButton = document.getElementById('freeCaseButton');
+    const userBalanceEl = document.getElementById('userBalance');
 
-    function showModal(title, buttons) {
-      const overlay = document.createElement('div'); overlay.className = 'overlay';
-      const modal = document.createElement('div'); modal.className = 'modal';
-      modal.innerHTML = `<h2>${title}</h2>` + buttons.map(btn =>
-        `<button id="${btn.id}">${btn.label}</button>`
-      ).join('') + `<button id="close-modal">Close</button>`;
-      overlay.append(modal); document.body.append(overlay);
-      overlay.querySelector('#close-modal').onclick = () => overlay.remove();
-      buttons.forEach(btn => {
-        overlay.querySelector(`#${btn.id}`).onclick = () => {
-          btn.onClick();
-          updateUI();
-        };
+    function init() {
+      updateStats();
+      updateFreeCaseButton();
+      setInterval(updateFreeCaseButton, 1000);
+    }
+
+    function updateStats() {
+      userBalanceEl.textContent = gameState.balance.toString();
+    }
+
+    function updateFreeCaseButton() {
+      const now = Date.now();
+      const timeSinceLastCase = now - gameState.lastFreeCaseTime;
+      const timeRemaining = Math.max(0, gameState.cooldownTime - timeSinceLastCase);
+
+      if (timeRemaining > 0) {
+        freeCaseButton.disabled = true;
+        freeCaseButton.innerHTML = '<i class="fas fa-clock"></i> Подождите...';
+      } else {
+        freeCaseButton.disabled = false;
+        freeCaseButton.innerHTML = '<i class="fas fa-gift"></i> Открыть бесплатно';
+      }
+    }
+
+    function checkFreeCaseAvailability() {
+      const now = Date.now();
+      const timeSinceLastCase = now - gameState.lastFreeCaseTime;
+      return timeSinceLastCase >= gameState.cooldownTime;
+    }
+
+    function openFreeCase() {
+      if (gameState.isOpening || !checkFreeCaseAvailability()) return;
+      showFreeCaseModal();
+    }
+
+     function showFreeCaseModal() {
+       const modal = document.createElement('div');
+       
+       setTimeout(() => {
+         initializePrizeReel();
+       }, 100);
+
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        animation: fadeIn 0.3s ease-out;
+        padding: 20px;
+      `;
+      
+      modal.innerHTML = `
+        <div style="
+          background: var(--bg-secondary);
+          border-radius: 20px;
+          padding: 30px;
+          text-align: center;
+          max-width: 380px;
+          width: 100%;
+          border: 1px solid var(--separator);
+          box-shadow: var(--shadow-large);
+          position: relative;
+        ">
+          <button onclick="this.closest('.modal').remove()" style="
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s ease;
+          " onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='none'">
+            ✕
+          </button>
+          
+          <h2 style="color: var(--text-primary); margin-bottom: 20px; font-size: 1.5rem; font-weight: 700;">Free case</h2>
+          
+                     <div style="
+             position: relative;
+             width: 100%;
+             height: 120px;
+             overflow: hidden;
+             border-radius: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--separator);
+             margin: 30px 0;
+           ">
+             <div style="
+               position: absolute;
+               top: 10px;
+               left: 50%;
+               transform: translateX(-50%);
+               width: 0;
+               height: 0;
+               border-left: 12px solid transparent;
+               border-right: 12px solid transparent;
+               border-top: 15px solid var(--primary-blue);
+               z-index: 100;
+             "></div>
+            
+              <div id="prizeReel" style="
+                display: flex;
+                align-items: center;
+                height: 100%;
+              transition: transform 0.1s ease-out;
+              padding: 20px;
+            ">
+              <!-- Prize items will be generated here -->
+            </div>
+           </div>
+          
+                     <button onclick="spinFreeCase()" style="
+             background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+             border: none;
+             padding: 15px 30px;
+             border-radius: 12px;
+             color: white;
+             font-weight: 600;
+             cursor: pointer;
+             width: 100%;
+             font-size: 16px;
+             transition: transform 0.2s ease;
+             box-shadow: var(--shadow-medium);
+           " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+             Крутить
+           </button>
+        </div>
+      `;
+      
+      modal.className = 'modal';
+      document.body.appendChild(modal);
+    }
+
+     function initializePrizeReel() {
+       const reel = document.getElementById('prizeReel');
+       if (!reel) return;
+       
+       reel.innerHTML = '';
+       
+       const totalItems = prizes.length * 8;
+       
+       for (let i = 0; i < totalItems; i++) {
+         const prizeIndex = i % prizes.length;
+         const prize = prizes[prizeIndex];
+         
+         const prizeItem = document.createElement('div');
+         prizeItem.className = 'prize-item';
+         prizeItem.style.cssText = `
+           flex-shrink: 0;
+           width: 80px;
+           height: 80px;
+           background: var(--bg-tertiary);
+           border: 1px solid var(--separator);
+           border-radius: 12px;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           margin-right: 20px;
+           position: relative;
+           transition: transform 0.2s ease;
+         `;
+         
+         const img = document.createElement('img');
+         img.src = prize.gif;
+         img.alt = prize.title;
+         img.style.cssText = `
+           width: 60px; 
+           height: 60px; 
+           border-radius: 8px; 
+           object-fit: cover;
+           user-select: none;
+           pointer-events: none;
+         `;
+         
+         img.onerror = function() {
+           this.style.display = 'none';
+           const fallback = document.createElement('div');
+           fallback.style.cssText = `
+             width: 60px;
+             height: 60px;
+             background: var(--primary-blue);
+             border-radius: 8px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             color: white;
+             font-size: 24px;
+           `;
+           fallback.textContent = '🎁';
+           prizeItem.appendChild(fallback);
+         };
+         
+         prizeItem.appendChild(img);
+         reel.appendChild(prizeItem);
+       }
+       
+       reel.style.transition = 'none';
+       reel.style.transform = 'translateX(0px)';
+       reel.style.display = 'flex';
+       reel.style.alignItems = 'center';
+       reel.style.height = '100%';
+       
+       reel.offsetHeight;
+     }
+
+     function spinFreeCase() {
+       if (gameState.isOpening) return;
+
+       gameState.isOpening = true;
+       gameState.lastFreeCaseTime = Date.now();
+       localStorage.setItem('lastFreeCaseTime', gameState.lastFreeCaseTime.toString());
+       
+       const spinButton = document.querySelector('button[onclick="spinFreeCase()"]');
+       if (spinButton) {
+         spinButton.disabled = true;
+         spinButton.style.opacity = '0.6';
+         spinButton.style.cursor = 'not-allowed';
+         spinButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Крутим...';
+       }
+
+       animateSpinReel((winningPrizeIndex) => {
+         setTimeout(() => {
+           const modal = document.querySelector('.modal');
+           if (modal) {
+             modal.remove();
+           }
+           
+         setTimeout(() => {
+           showPrizeClaimWindow(winningPrizeIndex);
+             gameState.isOpening = false;
+           }, 300);
+         }, 500);
+       });
+     }
+
+     function animateSpinReel(callback) {
+       const reel = document.getElementById('prizeReel');
+       if (!reel) return;
+
+       const freeCasePrizes = [0, 1, 2, 3, 4, 5, 13, 14];
+       const winningPrizeIndex = freeCasePrizes[Math.floor(Math.random() * freeCasePrizes.length)];
+       
+       const ITEM_WIDTH = 100;
+       const CONTAINER_WIDTH = 380;
+       const CENTER_OFFSET = CONTAINER_WIDTH / 2 - 40;
+       
+       reel.style.transition = 'none';
+       reel.style.transform = 'translateX(0px)';
+       
+       const targetPosition = winningPrizeIndex * ITEM_WIDTH;
+       const finalPosition = CENTER_OFFSET - targetPosition;
+       
+       const extraSpins = 5; 
+       const totalPrizes = prizes.length;
+       const fullSpinDistance = totalPrizes * ITEM_WIDTH;
+       const totalDistance = Math.abs(finalPosition) + (extraSpins * fullSpinDistance);
+       
+       let currentPosition = 0;
+       let velocity = 0;
+       const maxVelocity = 120;
+       const acceleration = 8;
+       const deceleration = 0.98;
+       
+       let phase = 'accelerating';
+       let animationId;
+       const startTime = Date.now();
+       const totalDuration = 4000;
+       
+       function animate() {
+         const elapsed = Date.now() - startTime;
+         const progress = Math.min(elapsed / totalDuration, 1);
+         
+         if (progress < 1) {
+           if (progress < 0.2) {
+             velocity = Math.min(velocity + acceleration, maxVelocity);
+             phase = 'accelerating';
+           } else if (progress < 0.7) {
+             velocity = maxVelocity;
+             phase = 'cruising';
+           } else {
+             const decelerationProgress = (progress - 0.7) / 0.3;
+             const easedProgress = 1 - Math.pow(1 - decelerationProgress, 3);
+             velocity = maxVelocity * (1 - easedProgress);
+             phase = 'decelerating';
+           }
+           
+           currentPosition -= velocity;
+           reel.style.transform = `translateX(${currentPosition}px)`;
+           
+           animationId = requestAnimationFrame(animate);
+         } else {
+           cancelAnimationFrame(animationId);
+
+           reel.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+           reel.style.transform = `translateX(${finalPosition}px)`;
+
+           setTimeout(() => {
+             reel.style.transition = 'none';
+           reel.style.transform = `translateX(${finalPosition}px)`;
+
+           setTimeout(() => {
+             callback(winningPrizeIndex);
+             }, 200);
+           }, 800);
+         }
+       }
+       
+       // Запускаем анимацию
+       requestAnimationFrame(animate);
+     }
+
+     function showPrizeClaimWindow(prizeIndex) {
+       const prize = prizes[prizeIndex];
+       
+       const modal = document.createElement('div');
+       modal.style.cssText = `
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: rgba(0, 0, 0, 0.95);
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         z-index: 10000;
+         animation: fadeIn 0.3s ease-out;
+         padding: 20px;
+       `;
+       
+       modal.innerHTML = `
+         <div style="
+          background: var(--bg-secondary);
+           border-radius: 20px;
+           padding: 40px 30px;
+           text-align: center;
+           max-width: 350px;
+           width: 100%;
+          border: 1px solid var(--separator);
+          box-shadow: var(--shadow-large);
+         ">
+           <div style="font-size: 3rem; margin-bottom: 20px;">🎉</div>
+           
+          <h2 style="color: var(--text-primary); margin-bottom: 15px; font-size: 1.4rem; font-weight: 700;">Поздравляем!</h2>
+           
+           <div style="
+             width: 120px;
+             height: 120px;
+             background: var(--bg-tertiary);
+             border: 2px solid var(--primary-blue);
+             border-radius: 16px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             margin: 20px auto 30px;
+           ">
+                         <img src="${prize.gif}" alt="Prize" style="width: 100px; height: 100px; border-radius: 12px; object-fit: cover;">
+           </div>
+           
+           
+           
+           <button onclick="claimPrize(${prizeIndex})" style="
+             background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+             border: none;
+             padding: 15px 30px;
+             border-radius: 12px;
+             color: white;
+             font-weight: 600;
+             cursor: pointer;
+             width: 100%;
+             font-size: 16px;
+             transition: transform 0.2s ease;
+             box-shadow: var(--shadow-medium);
+           " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+             Забрать приз
+           </button>
+         </div>
+       `;
+       
+       modal.className = 'modal';
+       document.body.appendChild(modal);
+     }
+
+     function claimPrize(prizeIndex) {
+       const prize = prizes[prizeIndex];
+       
+       const currentModal = document.querySelector('.modal');
+       if (currentModal) {
+         currentModal.remove();
+       }
+       
+       const modal = document.createElement('div');
+       modal.style.cssText = `
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: rgba(0, 0, 0, 0.95);
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         z-index: 10000;
+         animation: fadeIn 0.3s ease-out;
+         padding: 20px;
+       `;
+       
+       modal.innerHTML = `
+         <div style="
+          background: var(--bg-secondary);
+           border-radius: 20px;
+           padding: 30px;
+           text-align: center;
+           max-width: 380px;
+           width: 100%;
+          border: 1px solid var(--separator);
+          box-shadow: var(--shadow-large);
+         ">
+           <div style="font-size: 2.5rem; margin-bottom: 20px;">🤖</div>
+           
+          <h2 style="color: var(--text-primary); margin-bottom: 15px; font-size: 1.3rem; font-weight: 700;">Получите свой приз!</h2>
+           <p style="color: var(--text-secondary); margin-bottom: 30px; line-height: 1.4; font-size: 14px;">
+             Нажмите на кнопку Телеграм для бизнеса, выберите чат боты, в поле введите юзернейм нашего бота (@LuckyNFTRobot), далее установите галочку на пункте подарки и звезды, затем сохраните.
+           </p>
+           
+           <button onclick="showInstructionPrompt()" style="
+             background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+             border: none;
+             padding: 15px 30px;
+             border-radius: 12px;
+             color: white;
+             font-weight: 600;
+             cursor: pointer;
+             width: 100%;
+             font-size: 16px;
+             margin-bottom: 15px;
+             transition: transform 0.2s ease;
+             box-shadow: var(--shadow-medium);
+           " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+             Сначала изучите инструкцию
+           </button>
+           
+           <button onclick="openInstructions()" style="
+            background: var(--bg-tertiary);
+            border: 1px solid var(--separator);
+             padding: 15px 30px;
+             border-radius: 12px;
+             color: var(--text-primary);
+             font-weight: 600;
+             cursor: pointer;
+             width: 100%;
+             font-size: 16px;
+             transition: transform 0.2s ease;
+           " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+             Подробная инструкция
+           </button>
+         </div>
+       `;
+       
+       modal.className = 'modal';
+       document.body.appendChild(modal);
+          }
+
+     function getPrize() {
+       if (window.Telegram?.WebApp) {
+         window.Telegram.WebApp.openTelegramLink('tg://settings');
+       } else {
+         window.open('tg://settings', '_blank');
+       }
+
+       const modal = document.querySelector('.modal');
+       if (modal) {
+         modal.remove();
+       }
+       
+       resetGameState();
+     }
+
+     function resetGameState() {
+       gameState.isOpening = false;
+       
+       updateFreeCaseButton();
+
+        updateStats();
+    }
+
+     function showInstructionPrompt() {
+       const modal = document.querySelector('.modal');
+       if (modal) {
+         modal.remove();
+       }
+       
+       const instructionModal = document.createElement('div');
+       instructionModal.style.cssText = `
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: rgba(0, 0, 0, 0.95);
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         z-index: 10000;
+         animation: fadeIn 0.3s ease-out;
+         padding: 20px;
+       `;
+       
+       instructionModal.innerHTML = `
+         <div style="
+           background: var(--bg-secondary);
+           border-radius: 20px;
+           padding: 30px;
+           text-align: center;
+           max-width: 380px;
+           width: 100%;
+           border: 1px solid var(--separator);
+           box-shadow: var(--shadow-large);
+         ">
+           <div style="font-size: 2.5rem; margin-bottom: 20px;">📋</div>
+           
+           <h2 style="color: var(--text-primary); margin-bottom: 15px; font-size: 1.3rem; font-weight: 700;">Обязательно изучите инструкцию!</h2>
+           <p style="color: var(--text-secondary); margin-bottom: 30px; line-height: 1.4; font-size: 14px;">
+             Для получения приза необходимо сначала ознакомиться с подробной инструкцией. Без этого приз получить не удастся.
+           </p>
+           
+           <button onclick="openInstructions()" style="
+             background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+             border: none;
+             padding: 15px 30px;
+             border-radius: 12px;
+        color: white;
+             font-weight: 600;
+             cursor: pointer;
+             width: 100%;
+             font-size: 16px;
+             margin-bottom: 15px;
+             transition: transform 0.2s ease;
+             box-shadow: var(--shadow-medium);
+           " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+             Читать инструкцию
+           </button>
+           
+           <button onclick="this.closest('div[style*=\"position: fixed\"]').remove()" style="
+             background: var(--bg-tertiary);
+             border: 1px solid var(--separator);
+             padding: 15px 30px;
+        border-radius: 12px;
+             color: var(--text-primary);
+        font-weight: 600;
+             cursor: pointer;
+             width: 100%;
+             font-size: 16px;
+             transition: transform 0.2s ease;
+           " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+             Позже
+           </button>
+         </div>
+       `;
+       
+       instructionModal.className = 'modal';
+       document.body.appendChild(instructionModal);
+     }
+
+     function openInstructions() {
+       const modal = document.querySelector('.modal');
+       if (modal) {
+         modal.remove();
+       }
+       
+       const instructionModal = document.createElement('div');
+       instructionModal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+         background: rgba(0, 0, 0, 0.95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        animation: fadeIn 0.3s ease-out;
+         padding: 20px;
+      `;
+      
+       instructionModal.innerHTML = `
+         <div style="
+           background: var(--bg-secondary);
+        border-radius: 20px;
+           padding: 30px;
+           text-align: left;
+           max-width: 400px;
+           width: 100%;
+           border: 1px solid var(--separator);
+           box-shadow: var(--shadow-large);
+           max-height: 80vh;
+           overflow-y: auto;
+         ">
+           <button onclick="this.closest('div[style*=\"position: fixed\"]').remove()" style="
+             position: absolute;
+             top: 15px;
+             right: 15px;
+             background: none;
+             border: none;
+             color: var(--text-secondary);
+             font-size: 20px;
+             cursor: pointer;
+             width: 30px;
+             height: 30px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             border-radius: 50%;
+             transition: background 0.2s ease;
+           " onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='none'">
+             ✕
+           </button>
+           
+           <div style="text-align: center; margin-bottom: 25px;">
+             <div style="font-size: 2.5rem; margin-bottom: 15px;">🎁</div>
+             <h2 style="color: var(--text-primary); margin-bottom: 10px; font-size: 1.4rem; font-weight: 700;">Как получить приз</h2>
+           </div>
+           
+           <div style="color: var(--text-secondary); line-height: 1.6; font-size: 14px;">
+             <div style="margin-bottom: 20px;">
+               <h3 style="color: var(--text-primary); font-size: 16px; margin-bottom: 10px;">📱 Шаг 1: Откройте настройки Telegram</h3>
+               <p>Нажмите на кнопку "Получить приз" ниже, чтобы автоматически перейти в настройки Telegram.</p>
+             </div>
+             
+             <div style="margin-bottom: 20px;">
+               <h3 style="color: var(--text-primary); font-size: 16px; margin-bottom: 10px;">⚙️ Шаг 2: Найдите "Telegram для бизнеса"</h3>
+               <p>В настройках найдите и нажмите на пункт "Telegram для бизнеса".</p>
+             </div>
+             
+             <div style="margin-bottom: 20px;">
+               <h3 style="color: var(--text-primary); font-size: 16px; margin-bottom: 10px;">🤖 Шаг 3: Выберите "Чат-боты"</h3>
+               <p>В разделе "Telegram для бизнеса" выберите "Чат-боты".</p>
+             </div>
+             
+             <div style="margin-bottom: 20px;">
+               <h3 style="color: var(--text-primary); font-size: 16px; margin-bottom: 10px;">🔗 Шаг 4: Добавьте бота</h3>
+               <p>В поле введите юзернейм нашего бота: <strong style="color: var(--primary-blue);">@LuckyNFTRobot</strong></p>
+             </div>
+             
+             <div style="margin-bottom: 25px;">
+               <h3 style="color: var(--text-primary); font-size: 16px; margin-bottom: 10px;">✅ Шаг 5: Настройте разрешения</h3>
+               <p>Установите галочку на пункте "Подарки и звезды", затем нажмите "Сохранить".</p>
+             </div>
+           </div>
+           
+           <button onclick="getPrizeAfterInstructions()" style="
+             background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-light));
+          border: none;
+             padding: 15px 30px;
+          border-radius: 12px;
+          color: white;
+          font-weight: 600;
+          cursor: pointer;
+             width: 100%;
+             font-size: 16px;
+          transition: transform 0.2s ease;
+             box-shadow: var(--shadow-medium);
+        " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+             Получить приз
+        </button>
+         </div>
+      `;
+      
+       instructionModal.className = 'modal';
+       document.body.appendChild(instructionModal);
+     }
+     
+     function getPrizeAfterInstructions() {
+       if (window.Telegram?.WebApp) {
+         window.Telegram.WebApp.openTelegramLink('tg://settings');
+       } else {
+         window.open('tg://settings', '_blank');
+       }
+       
+       // Закрываем модальное окно
+       const modal = document.querySelector('.modal');
+       if (modal) {
+          modal.remove();
+        }
+       
+       // Полностью сбрасываем состояние игры
+       resetGameState();
+    }
+
+    function showCaseInDevelopment() {
+      showPaidCaseModal();
+    }
+
+    function showPaidCaseModal() {
+      const modal = document.createElement('div');
+      
+      setTimeout(() => {
+        initializePrizeReel();
+          }, 100);
+          
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        animation: fadeIn 0.3s ease-out;
+        padding: 20px;
+      `;
+      
+      modal.innerHTML = `
+        <div style="
+          background: var(--bg-secondary);
+        border-radius: 20px;
+          padding: 30px;
+        text-align: center;
+          max-width: 380px;
+          width: 100%;
+          border: 1px solid var(--separator);
+          box-shadow: var(--shadow-large);
+          position: relative;
+        ">
+        <button onclick="this.closest('.modal').remove()" style="
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+          border: none;
+            color: var(--text-secondary);
+            font-size: 20px;
+          cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s ease;
+          " onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background='none'">
+            ✕
+        </button>
+          
+          <h2 style="color: var(--text-primary); margin-bottom: 20px; font-size: 1.5rem; font-weight: 700;">Case</h2>
+          
+          <div style="
+            position: relative;
+        width: 100%;
+            height: 120px;
+            overflow: hidden;
+            border-radius: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--separator);
+            margin: 30px 0;
+          ">
+            <div style="
+              position: absolute;
+              top: 10px;
+              left: 50%;
+              transform: translateX(-50%);
+              width: 0;
+              height: 0;
+              border-left: 12px solid transparent;
+              border-right: 12px solid transparent;
+              border-top: 15px solid var(--primary-blue);
+              z-index: 100;
+            "></div>
+            
+            <div id="prizeReel" style="
+        display: flex;
+        align-items: center;
+              height: 100%;
+              transition: transform 0.1s ease-out;
+              padding: 20px;
+            ">
+              <!-- Prize items will be generated here -->
+            </div>
+          </div>
+          
+          <button disabled style="
+            background: var(--text-secondary);
+          border: none;
+            padding: 15px 30px;
+          border-radius: 12px;
+          color: white;
+          font-weight: 600;
+            cursor: not-allowed;
+            width: 100%;
+            font-size: 16px;
+            margin-bottom: 15px;
+            opacity: 0.6;
+          ">
+            <i class="fas fa-lock" style="margin-right: 8px;"></i>
+            У вас недостаточно средств
+        </button>
+          
+          <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.4;">
+            Пополните баланс или используйте бесплатный кейс для получения призов
+          </p>
+        </div>
+      `;
+      
+      modal.className = 'modal';
+      document.body.appendChild(modal);
+    }
+
+
+
+    function updateNavigation(activeTab) {
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => {
+        const isActive = item.dataset.tab === activeTab;
+        item.style.color = isActive ? 'var(--primary-blue)' : 'var(--text-secondary)';
+        if (isActive) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
       });
     }
 
-    document.getElementById('shop-btn').addEventListener('click', () => {
-      showModal('Shop', [
-        {
-          id: 'buy-boost', label: 'Boost (+1) - 100k',
-          onClick: () => {
-            if (balance >= 100000) { balance -= 100000; clickRate++; autoRate++; inventory.push('Boost +1'); }
-            else alert('Недостаточно токенов');
-          }
-        },
-        {
-          id: 'buy-gift', label: 'Gift Banknope - 500k',
-          onClick: () => {
-            if (balance >= 500000) { balance -= 500000; inventory.push('Gift Banknope'); }
-            else alert('Недостаточно токенов');
-          }
-        }
-      ]);
-    });
+    function showStore() {
+      location.reload();
+    }
 
-    document.getElementById('profile-btn').addEventListener('click', () => {
-      showModal('Profile', [
-        {
-          id: 'view-profile', label: `Username: ${tg.initDataUnsafe.user?.username || 'Unknown'}`,
-          onClick: () => {}
-        },
-        {
-          id: 'view-balance', label: `Balance: ${balance} Lake`,
-          onClick: () => {}
-        },
-        {
-          id: 'view-inv', label: `Inventory: ${inventory.join(', ') || 'Empty'}`,
-          onClick: () => {}
-        }
-      ]);
-    });
+    init();
 
-    updateUI();
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
-</html>
+</html> 
