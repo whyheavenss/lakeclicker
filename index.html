@@ -782,11 +782,10 @@ function tapGargonna(card) {
 
 
 // Восстановление энергии каждую секунду
+// Запускаем только этот интервал, который прибавляет энергию с учётом оффлайна
 setInterval(() => {
-  if (energy < maxEnergy) {
-    energy += 1;
-    updateEnergyDisplay();
-  }
+  updateEnergyOffline();
+  updateEnergyDisplay();
 }, 1000);
 
 // Инициализация при загрузке страницы
