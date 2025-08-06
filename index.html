@@ -729,7 +729,7 @@ function updateEnergyDisplay() {
 
 function tapGargonna(card) {
   const now = Date.now();
-  const clickDelay = 60; // задержка в миллисекундах между кликами
+  const clickDelay = 100; // задержка в миллисекундах между кликами
 
   if (now - lastClickTime < clickDelay) {
     return;
