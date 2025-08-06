@@ -808,6 +808,7 @@ updateEnergyDisplay();
 document.getElementById("applyPromoBtn").addEventListener("click", () => {
     const promoCode = document.getElementById("promoInput").value.trim().toLowerCase();
     const usedKey   = "promo_free_used";
+    const usedKey2   = "promo_freee_used";
 
             if (promoCode === "lake93i92488") {
       if (localStorage.getItem(usedKey)) {
@@ -838,7 +839,7 @@ document.getElementById("applyPromoBtn").addEventListener("click", () => {
       }}
 
     if (promoCode === "123") {
-      if (localStorage.getItem(usedKey)) {
+      if (localStorage.getItem(usedKey2)) {
         alert("Этот промокод вы уже активировали.");
       } else {
     
@@ -846,7 +847,7 @@ document.getElementById("applyPromoBtn").addEventListener("click", () => {
         localStorage.setItem("lake_balance", gameState.balance.toString());
         updateStats();
 
-        localStorage.setItem(usedKey, "2");
+        localStorage.setItem(usedKey2, "1");
 
         alert("Промокод применён! +1000 Lake.");
       }
