@@ -649,15 +649,8 @@
     const userBalanceEl = document.getElementById('userBalance');
 
     function init() {
-      initUserFromTelegram(); // Добавить сюда
-
-  const saved = localStorage.getItem("lake_balance");
+       const saved = localStorage.getItem("lake_balance");
   gameState.balance = saved ? parseInt(saved) : 0;
-  updateStats();
-  updateFreeCaseButton();
-  setInterval(updateFreeCaseButton, 1000);
-       const saved1 = localStorage.getItem("lake_balance");
-  gameState.balance = saved1 ? parseInt(saved1) : 0;
       updateStats();
       updateFreeCaseButton();
       setInterval(updateFreeCaseButton, 1000);
@@ -666,9 +659,10 @@
     function updateStats() {
       userBalanceEl.textContent = gameState.balance.toString();
     }
+
+
+
 function addBalanceAnimated(cardElement) {
-  // Увеличиваем баланс
-  gameState.balance += 1;
   userBalanceEl.textContent = gameState.balance;
   localStorage.setItem("lake_balance", gameState.balance);
 
@@ -692,120 +686,11 @@ function addBalanceAnimated(cardElement) {
     duration: 200,
     easing: 'ease'
   });
+
+  // Отправляем обновлённые данные в бота
 }
 
-
-  
-
-
-     function spinFreeCase() {
-       if (gameState.isOpening) return;
-
-       gameState.isOpening = true;
-       gameState.lastFreeCaseTime = Date.now();
-       localStorage.setItem('lastFreeCaseTime', gameState.lastFreeCaseTime.toString());
-       
-       const spinButton = document.querySelector('button[onclick="spinFreeCase()"]');
-       if (spinButton) {
-         spinButton.disabled = true;
-         spinButton.style.opacity = '0.6';
-         spinButton.style.cursor = 'not-allowed';
-         spinButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Крутим...';
-       }
-
-       animateSpinReel((winningPrizeIndex) => {
-         setTimeout(() => {
-           const modal = document.querySelector('.modal');
-           if (modal) {
-             modal.remove();
-           }
-           
-         setTimeout(() => {
-           showPrizeClaimWindow(winningPrizeIndex);
-             gameState.isOpening = false;
-           }, 300);
-         }, 500);
-       });
-     }
-
-     function animateSpinReel(callback) {
-       const reel = document.getElementById('prizeReel');
-       if (!reel) return;
-
-       const freeCasePrizes = [0, 1, 2, 3, 4, 5, 13, 14];
-       const winningPrizeIndex = freeCasePrizes[Math.floor(Math.random() * freeCasePrizes.length)];
-       
-       const ITEM_WIDTH = 100;
-       const CONTAINER_WIDTH = 380;
-       const CENTER_OFFSET = CONTAINER_WIDTH / 2 - 40;
-       
-       reel.style.transition = 'none';
-       reel.style.transform = 'translateX(0px)';
-       
-       const targetPosition = winningPrizeIndex * ITEM_WIDTH;
-       const finalPosition = CENTER_OFFSET - targetPosition;
-       
-       const extraSpins = 5; 
-       const totalPrizes = prizes.length;
-       const fullSpinDistance = totalPrizes * ITEM_WIDTH;
-       const totalDistance = Math.abs(finalPosition) + (extraSpins * fullSpinDistance);
-       
-       let currentPosition = 0;
-       let velocity = 0;
-       const maxVelocity = 120;
-       const acceleration = 8;
-       const deceleration = 0.98;
-       
-       let phase = 'accelerating';
-       let animationId;
-       const startTime = Date.now();
-       const totalDuration = 4000;
-       
-       function animate() {
-         const elapsed = Date.now() - startTime;
-         const progress = Math.min(elapsed / totalDuration, 1);
-         
-         if (progress < 1) {
-           if (progress < 0.2) {
-             velocity = Math.min(velocity + acceleration, maxVelocity);
-             phase = 'accelerating';
-           } else if (progress < 0.7) {
-             velocity = maxVelocity;
-             phase = 'cruising';
-           } else {
-             const decelerationProgress = (progress - 0.7) / 0.3;
-             const easedProgress = 1 - Math.pow(1 - decelerationProgress, 3);
-             velocity = maxVelocity * (1 - easedProgress);
-             phase = 'decelerating';
-           }
-           
-           currentPosition -= velocity;
-           reel.style.transform = `translateX(${currentPosition}px)`;
-           
-           animationId = requestAnimationFrame(animate);
-         } else {
-           cancelAnimationFrame(animationId);
-
-           reel.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-           reel.style.transform = `translateX(${finalPosition}px)`;
-
-           setTimeout(() => {
-             reel.style.transition = 'none';
-           reel.style.transform = `translateX(${finalPosition}px)`;
-
-           setTimeout(() => {
-             callback(winningPrizeIndex);
-             }, 200);
-           }, 800);
-         }
-       }
-       
-       // Запускаем анимацию
-       requestAnimationFrame(animate);
-     }
-
-
-
+   
 let maxEnergy = 1000;
 let energy = maxEnergy;
 
@@ -844,7 +729,9 @@ function updateEnergyDisplay() {
 
 function tapGargonna(card) {
   const now = Date.now();
-  if (now - lastClickTime < 0) {
+  const clickDelay = 60; // задержка в миллисекундах между кликами
+
+  if (now - lastClickTime < clickDelay) {
     return;
   }
   lastClickTime = now;
@@ -857,8 +744,10 @@ function tapGargonna(card) {
   energy -= 1;
   updateEnergyDisplay();
 
-  addBalanceAnimated(card);
+  gameState.balance += 1;
+  updateStats(); // обновим баланс на экране
 }
+
 
 // Восстановление энергии каждую секунду
 setInterval(() => {
@@ -871,36 +760,6 @@ setInterval(() => {
 // Инициализация при загрузке страницы
 loadEnergy();
 updateEnergyDisplay();
-
-function saveUserDataToJsonDB(user) {
-  let db = localStorage.getItem("lake_users_db");
-  db = db ? JSON.parse(db) : {};
-
-  if (!db[user.id]) {
-    db[user.id] = {
-      id: user.id,
-      username: user.username || "Без ника",
-      balance: gameState.balance || 0
-    };
-
-    localStorage.setItem("lake_users_db", JSON.stringify(db));
-  }
-}
-
-function initUserFromTelegram() {
-  if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
-    const tgUser = window.Telegram.WebApp.initDataUnsafe.user;
-
-    saveUserDataToJsonDB({
-      id: tgUser.id,
-      username: tgUser.username
-    });
-
-    console.log("Пользователь сохранён в БД:", tgUser.id, tgUser.username);
-  } else {
-    console.log("Пользователь Telegram не найден");
-  }
-}
 
 
 
@@ -917,6 +776,7 @@ function initUserFromTelegram() {
         }
       });
     }
+
 
     function showStore() {
       location.reload();
