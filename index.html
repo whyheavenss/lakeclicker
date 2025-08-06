@@ -809,6 +809,21 @@ document.getElementById("applyPromoBtn").addEventListener("click", () => {
     const promoCode = document.getElementById("promoInput").value.trim().toLowerCase();
     const usedKey   = "promo_free_used";
 
+    
+        if (promoCode === "ksdfksdfjksd") {
+      if (localStorage.getItem(usedKey)) {
+        alert("Этот промокод вы уже активировали.");
+      } else {
+    
+        gameState.balance += 1000;
+        localStorage.setItem("lake_balance", gameState.balance.toString());
+        updateStats();
+
+        localStorage.setItem(usedKey, "1");
+
+        alert("Промокод применён! +1000 Lake.");
+      }}
+
         if (promoCode === "free") {
       if (localStorage.getItem(usedKey)) {
         alert("Этот промокод вы уже активировали.");
