@@ -742,17 +742,23 @@ function updateEnergyDisplay() {
 
 function updateEnergyOffline() {
   const now = Date.now();
-  const diff = now - lastEnergyUpdate; // миллисекунды с прошлого обновления
+  const diff = now - lastEnergyUpdate; // миллисекунды
   const secondsPassed = Math.floor(diff / 1000);
 
   if (secondsPassed > 0) {
-    // Восстанавливаем 1 энергию в секунду
     const energyToAdd = secondsPassed;
-    energy = Math.min(maxEnergy, energy + energyToAdd);
-    lastEnergyUpdate = now;
-    saveEnergy();
+    if (energy < maxEnergy) {
+      energy = Math.min(maxEnergy, energy + energyToAdd);
+      lastEnergyUpdate = now;
+      saveEnergy();
+    } else {
+      // Если энергия уже максимальна — просто обновляем время, чтобы не считать снова
+      lastEnergyUpdate = now;
+      localStorage.setItem("lastEnergyUpdate", lastEnergyUpdate.toString());
+    }
   }
 }
+
 
 setInterval(() => {
   updateEnergyOffline();
