@@ -809,20 +809,6 @@ document.getElementById("applyPromoBtn").addEventListener("click", () => {
     const promoCode = document.getElementById("promoInput").value.trim().toLowerCase();
     const usedKey   = "promo_free_used";
 
-                if (promoCode === "lakeiuds8f7s87") {
-      if (localStorage.getItem(usedKey)) {
-        alert("Этот промокод вы уже активировали.");
-      } else {
-    
-        gameState.balance += 3000;
-        localStorage.setItem("lake_balance", gameState.balance.toString());
-        updateStats();
-
-        localStorage.setItem(usedKey, "1");
-
-        alert("Промокод применён! +3000 Lake.");
-      }}
-
             if (promoCode === "lake93i92488") {
       if (localStorage.getItem(usedKey)) {
         alert("Этот промокод вы уже активировали.");
@@ -851,12 +837,12 @@ document.getElementById("applyPromoBtn").addEventListener("click", () => {
         alert("Промокод применён! +1000 Lake.");
       }}
 
-    if (promoCode === "выаыуш28932894") {
+    if (promoCode === "123") {
       if (localStorage.getItem(usedKey)) {
         alert("Этот промокод вы уже активировали.");
       } else {
     
-        gameState.balance += 1000;
+        gameState.balance += 3000;
         localStorage.setItem("lake_balance", gameState.balance.toString());
         updateStats();
 
