@@ -589,6 +589,50 @@
   ⚡ <span id="energy">1000</span>/1000
 </div>
 
+<div style="margin: 12px 0; text-align: center;">
+  <input type="text" id="promoInput" placeholder="Введите промокод" style="padding: 8px; border-radius: 8px; border: 1px solid var(--separator); width: 60%; max-width: 250px; color: var(--text-primary); background: var(--bg-secondary);" />
+  <button id="applyPromoBtn" style="margin-left: 8px; padding: 8px 16px; border-radius: 8px; border: none; background: var(--primary-blue); color: white; font-weight: 600; cursor: pointer;">Применить</button>
+</div>
+
+<!-- Новый блок с реферальной ссылкой -->
+<div id="referralBox" style="
+  margin: 16px auto;
+  padding: 12px 20px;
+  max-width: 320px;
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  border: 1px solid var(--separator);
+  color: var(--text-primary);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+">
+  <input type="text" id="referralLink" readonly style="
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    user-select: all;
+    cursor: pointer;
+  " title="Нажмите, чтобы скопировать"/>
+  <button id="copyReferralBtn" style="
+    padding: 6px 12px;
+    background: var(--primary-blue);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+  ">Скопировать</button>
+</div>
+
 
     <section class="categories-section fade-in-up">
       <div class="section-header">
@@ -798,7 +842,33 @@ setInterval(() => {
 loadEnergy();
 updateEnergyDisplay();
 
+document.getElementById("applyPromoBtn").addEventListener("click", () => {
+    const promoCode = document.getElementById("promoInput").value.trim().toLowerCase();
+    const usedKey   = "promo_free_used";
 
+    if (promoCode === "free") {
+      if (localStorage.getItem(usedKey)) {
+        alert("Этот промокод вы уже активировали.");
+      } else {
+    
+        gameState.balance += 200;
+        localStorage.setItem("lake_balance", gameState.balance.toString());
+        updateStats();
+
+        localStorage.setItem(usedKey, "1");
+
+        alert("Промокод применён! +200 Lake.");
+      }
+    } else {
+      alert("Неверный промокод.");
+    }
+  });
+
+
+function sendBalanceToBot() {
+  const balance = gameState.balance;
+  Telegram.WebApp.sendData(JSON.stringify({ balance }));
+}
 
 
     function updateNavigation(activeTab) {
@@ -813,6 +883,63 @@ updateEnergyDisplay();
         }
       });
     }
+
+     if (window.Telegram?.WebApp) {
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
+     }
+
+       const userId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || "unknown";
+
+  // Собираем ссылку с параметром ref
+  const referralLink = `${window.location.origin}${window.location.pathname}?ref=${userId}`;
+
+  // Вставляем в поле
+  const referralLinkInput = document.getElementById("referralLink");
+  referralLinkInput.value = referralLink;
+
+  // Копирование по кнопке
+  document.getElementById("copyReferralBtn").addEventListener("click", () => {
+    referralLinkInput.select();
+    referralLinkInput.setSelectionRange(0, 99999); // для мобильных
+    navigator.clipboard.writeText(referralLinkInput.value).then(() => {
+      alert("Реферальная ссылка скопирована!");
+    }).catch(() => {
+      alert("Не удалось скопировать ссылку. Попробуйте вручную.");
+    });
+  });
+
+  // Можно также копировать по клику на само поле
+  referralLinkInput.addEventListener("click", () => {
+    referralLinkInput.select();
+  });
+
+  // Проверяем URL на наличие реферала
+  function checkReferral() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get("ref");
+
+    // Игнорируем, если ref равен нашему userId (сам себе)
+    if (ref && ref !== userId) {
+      gameState.balance += 200;
+
+      // Обновляем и сохраняем
+      localStorage.setItem("lake_balance", gameState.balance.toString());
+      updateStats();
+
+      alert("Спасибо за приглашение друга! +0.2 Lake на баланс.");
+
+      // Можно дополнительно уведомить бота, отправить данные и т.п.
+      sendBalanceToBot();
+
+      // Чтобы не заспамить при перезагрузках — убираем параметр ref из URL (чтобы один раз засчитался)
+      urlParams.delete("ref");
+      const newUrl = window.location.origin + window.location.pathname + "?" + urlParams.toString();
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }
+
+  checkReferral();
 
 
     function showStore() {
