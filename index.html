@@ -811,7 +811,7 @@ document.getElementById("applyPromoBtn").addEventListener("click", () => {
     const usedKey2   = "promo_freee_used";
 
             if (promoCode === "lake93i92488") {
-      if (localStorage.getItem(usedKey)) {
+      if (localStorage.getItem(usedKey2)) {
         alert("Этот промокод вы уже активировали.");
       } else {
     
@@ -819,13 +819,13 @@ document.getElementById("applyPromoBtn").addEventListener("click", () => {
         localStorage.setItem("lake_balance", gameState.balance.toString());
         updateStats();
 
-        localStorage.setItem(usedKey, "1");
+        localStorage.setItem(usedKey2, "1");
 
         alert("Промокод применён! +2500 Lake.");
       }}
 
             if (promoCode === "lake9938492") {
-      if (localStorage.getItem(usedKey)) {
+      if (localStorage.getItem(usedKey2)) {
         alert("Этот промокод вы уже активировали.");
       } else {
     
@@ -833,23 +833,23 @@ document.getElementById("applyPromoBtn").addEventListener("click", () => {
         localStorage.setItem("lake_balance", gameState.balance.toString());
         updateStats();
 
-        localStorage.setItem(usedKey, "1");
+        localStorage.setItem(usedKey2, "1");
 
         alert("Промокод применён! +1000 Lake.");
       }}
 
-    if (promoCode === "123") {
+    if (promoCode === "lake1000") {
       if (localStorage.getItem(usedKey2)) {
         alert("Этот промокод вы уже активировали.");
       } else {
     
-        gameState.balance += 3000;
+        gameState.balance += 800;
         localStorage.setItem("lake_balance", gameState.balance.toString());
         updateStats();
 
         localStorage.setItem(usedKey2, "1");
 
-        alert("Промокод применён! +1000 Lake.");
+        alert("Промокод применён! +800 Lake.");
       }
     } else {
       alert("Неверный промокод.");
