@@ -653,6 +653,10 @@
   gameState.balance = saved ? parseInt(saved) : 0;
       updateStats();
       updateFreeCaseButton();
+      loadEnergy();    
+  updateEnergyOffline(); 
+  updateEnergyDisplay();
+  updateFreeCaseButton();
       setInterval(updateFreeCaseButton, 1000);
     }
 
@@ -699,7 +703,8 @@ const categoryCard = document.querySelector(".category-card");
 
 let lastClickTime = 0;
 
-// Загружаем энергию из localStorage, если есть
+let lastEnergyUpdate = 0;
+
 function loadEnergy() {
   const savedEnergy = localStorage.getItem("energy");
   if (savedEnergy !== null) {
@@ -708,24 +713,52 @@ function loadEnergy() {
       energy = maxEnergy;
     }
   }
+  
+  const savedLastUpdate = localStorage.getItem("lastEnergyUpdate");
+  if (savedLastUpdate) {
+    lastEnergyUpdate = parseInt(savedLastUpdate, 10);
+  } else {
+    lastEnergyUpdate = Date.now();
+    localStorage.setItem("lastEnergyUpdate", lastEnergyUpdate.toString());
+  }
 }
+
 
 // Сохраняем энергию в localStorage
 function saveEnergy() {
   localStorage.setItem("energy", energy);
+  localStorage.setItem("lastEnergyUpdate", Date.now().toString());
 }
 
 function updateEnergyDisplay() {
   energyDisplay.textContent = energy;
-  
   if (energy <= 0) {
     categoryCard.classList.add("disabled");
   } else {
     categoryCard.classList.remove("disabled");
   }
-
-  saveEnergy(); // сохраняем при каждом обновлении
+  saveEnergy();
 }
+
+function updateEnergyOffline() {
+  const now = Date.now();
+  const diff = now - lastEnergyUpdate; // миллисекунды с прошлого обновления
+  const secondsPassed = Math.floor(diff / 1000);
+
+  if (secondsPassed > 0) {
+    // Восстанавливаем 1 энергию в секунду
+    const energyToAdd = secondsPassed;
+    energy = Math.min(maxEnergy, energy + energyToAdd);
+    lastEnergyUpdate = now;
+    saveEnergy();
+  }
+}
+
+setInterval(() => {
+  updateEnergyOffline();
+  updateEnergyDisplay();
+}, 1000);
+
 
 function tapGargonna(card) {
   const now = Date.now();
